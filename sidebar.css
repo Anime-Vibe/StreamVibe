@@ -1,0 +1,10 @@
+/* ================================================================
+   sidebar.css
+   ملاحظة: تم دمج تصميم الشريط الجانبي الرئيسي داخل style.css
+   لضمان توحيد المتغيرات (الألوان / الثيمات) عبر الموقع كامل.
+   هذا الملف موجود فقط للحفاظ على التوافق مع وسم <link> القديم.
+   ================================================================ */
+
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--accent); opacity: 0.5; border-radius: 10px; }

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamVibe - Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="watch.css">
+    <style>
+        .episode-card { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .episode-card:hover { transform: translateY(-6px) scale(1.02); }
+        .episode-thumb { transition: all 0.3s ease; }
+        .episode-card.active .episode-thumb { box-shadow: 0 0 0 2px var(--red-bright), 0 12px 35px rgba(239,38,63,0.25); }
+        .modal-episode-card { transition: all 0.3s ease; }
+        .modal-episode-card:hover { transform: translateX(6px); }
+        .chip { transition: all 0.3s ease; }
+        .chip:hover { border-color: var(--red-bright); background: rgba(239,38,63,0.08); transform: scale(1.03); }
+        .stat-item { transition: all 0.3s ease; }
+        .stat-item:hover { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 0 8px; }
+    </style>
+    <script>
+        function switchTheme(themeName) {
+            document.body.classList.remove('theme-orange', 'theme-blue', 'theme-transition');
+            if (themeName !== 'default') document.body.classList.add('theme-' + themeName);
+            document.body.classList.add('theme-transition');
+            setTimeout(() => { document.body.classList.remove('theme-transition'); }, 600);
+            localStorage.setItem('selectedTheme', themeName);
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.style.transform = 'scale(1)';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            });
+            const activeBtn = document.querySelector(`.theme-btn-${themeName}`);
+            if (activeBtn) {
+                activeBtn.style.transform = 'scale(1.15)';
+                activeBtn.style.borderColor = '#fff';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('selectedTheme');
+            if (savedTheme && savedTheme !== 'default') {
+                document.body.classList.add('theme-' + savedTheme);
+                const activeBtn = document.querySelector(`.theme-btn-${savedTheme}`);
+                if (activeBtn) {
+                    activeBtn.style.transform = 'scale(1.15)';
+                    activeBtn.style.borderColor = '#fff';
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <aside class="sidebar show" id="sidebarMenu">
+        <div class="sidebar-header">
+            <div class="sidebar-logo-container">
+                <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" stroke="#ff4757" stroke-width="4"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#ff4757" stroke-width="1" opacity="0.5"/>
+                    <text x="50" y="65" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#ff4757" text-anchor="middle">束</text>
+                </svg>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-item">
+                <span class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path d="M9 21v-7h6v7"></path></svg></span>
+                <span class="link-text">Home</span>
+            </a>
+            <a href="movies.html" class="sidebar-item">
+                <span class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 4v16"></path><path d="M16 4v16"></path><path d="M3 8h5"></path><path d="M16 8h5"></path><path d="M3 16h5"></path><path d="M16 16h5"></path></svg></span>
+                <span class="link-text">Movies</span>
+            </a>
+            <a href="series.html" class="sidebar-item">
+                <span class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 4l-2-3"></path><path d="M16 4l2-3"></path><path d="M10 9l5 3-5 3V9z"></path></svg></span>
+                <span class="link-text">Series</span>
+            </a>
+            <a href="top.html" class="sidebar-item">
+                <span class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8l1 3H7l1-3z"></path><path d="M6 7h12v4a6 6 0 0 1-12 0V7z"></path><path d="M12 17v3"></path><path d="M8 20h8"></path><path d="M9 10h6"></path></svg></span>
+                <span class="link-text">Top Rated</span>
+            </a>
+            <a href="recommended.html" class="sidebar-item">
+                <span class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l1.15 5.35L18 9l-4.85 1.65L12 16l-1.15-5.35L6 9l4.85-1.65L12 2z"></path><path d="M19 14l.55 2.45L22 17l-2.45.55L19 20l-.55-2.45L16 17l2.45-.55L19 14z"></path><path d="M5 14l.45 1.55L7 16l-1.55.45L5 18l-.45-1.55L3 16l1.55-.45L5 14z"></path></svg></span>
+                <span class="link-text">Recommended</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <button class="profile-button" type="button" aria-label="Profile">
+                <img id="profileImage" src="https://placehold.co/80x80/1a1a2e/ffffff?text=U" alt="Profile">
+            </button>
+            <button class="sidebar-collapse" type="button" aria-label="Collapse sidebar">‹</button>
+        </div>
+    </aside>
+
+    <main>
+        <header class="topbar">
+            <a href="index.html" class="back"><span>←</span> Back to Home</a>
+            
+            <!-- أزرار الترايلر (يتم تعبئتها تلقائياً بواسطة JS) -->
+            <nav class="watch-tabs" id="watchTabsContainer" aria-label="Watch categories">
+            </nav>
+
+            <div class="top-actions">
+                <div class="animated-search" id="animatedSearch">
+                    <form class="animated-search-form" id="animatedSearchForm">
+                        <input id="animatedSearchInput" type="search" placeholder="Search..." autocomplete="off" aria-label="Search">
+                        <button class="animated-search-button" type="button" aria-label="Open search"><span class="animated-search-icon"></span></button>
+                    </form>
+                </div>
+                <button id="headerWatchLaterBtn" class="header-watch-later-btn" type="button">
+                    <span class="bookmark-icon">▮</span>
+                    <span class="header-watch-text">Watch Later</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-grid">
+            <section class="info-col">
+                <div class="anime-heading">
+                    <div class="anime-title-jp"></div>
+                    <h1 id="animeTitle" class="anime-title">Title</h1>
+                    <p id="animeCaption" class="anime-caption"></p>
+                    <p id="animeDesc" class="anime-desc"></p>
+                </div>
+                
+                <div class="meta-chips" id="metaChips"></div>
+
+                <div class="rating-line">
+                    <span class="rating-star">★</span>
+                    <strong id="ratingSummary">9.4 / 10</strong>
+                    <span class="popular-icon">♨</span>
+                    <strong class="popular-text">#1 Most Popular</strong>
+                </div>
+                <div class="genre-heading">GENRES</div>
+                <div class="genre-list" id="genreList"></div>
+            </section>
+
+            <div class="player-col">
+                <div class="video-wrapper" id="videoWrapper">
+                    <div class="video-poster" id="videoPoster">
+                        <img id="videoPosterImage" src="" alt="">
+                        <div class="video-poster-overlay"></div>
+                    </div>
+                    
+                    <!-- تم إضافة allow="autoplay" لضمان عمل التشغيل التلقائي -->
+                    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                    <video id="videoPlayerNative" class="video-native" muted playsinline controls></video>
+
+                    <div class="video-controls">
+                        <span class="video-time">0:01 / 1:00</span>
+                        <div class="video-progress"><span></span></div>
+                        <button type="button" aria-label="Volume">◖</button>
+                        <button type="button" aria-label="Settings">⚙</button>
+                        <button type="button" aria-label="Fullscreen">⛶</button>
+                    </div>
+                </div>
+
+                <div class="server-panel" id="serverList" aria-label="Video servers"></div>
+
+                <div class="watch-lower">
+                    <section class="episodes-panel">
+                        <div class="episodes-head">
+                            <div class="section-title">
+                                <span></span>
+                                <h2>Episodes</h2>
+                            </div>
+                            <div class="episode-nav">
+                                <button id="episodePrev" class="episode-arrow" type="button" aria-label="Previous episodes">‹</button>
+                                <button id="episodeNext" class="episode-arrow" type="button" aria-label="Next episodes">›</button>
+                            </div>
+                        </div>
+
+                        <div class="episodes-viewport" id="episodesViewport">
+                            <div class="episodes-track" id="episodesTrack"></div>
+                        </div>
+                        
+                        <div class="view-all-container">
+                            <button id="viewAllBtn" class="view-all-btn" type="button">
+                                <span>≡</span> View All Episodes
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="action-card">
+                        <div class="cover-wrapper">
+                            <img id="coverImage" class="cover-image" src="" alt="">
+                            <div class="anime-quote-overlay">
+                                <p id="animeQuoteText" class="anime-quote">
+                                    <span id="quoteEnglish">Loading quote...</span>
+                                    <br>
+                                    <span id="quoteArabic">جاري تحميل الاقتباس...</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-primary" id="watchNowBtn" type="button">▶ Watch Now</button>
+                            <button class="btn-secondary" id="seasonsBtn" type="button">▱ Seasons</button>
+                            <button class="btn-secondary" id="downloadBtn" type="button">↓ Download</button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="episodeModal" class="episode-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>All Episodes</h2>
+                <button id="closeModalBtn" class="modal-close-btn">✕</button>
+            </div>
+            <div class="modal-grid" id="modalGrid"></div>
+        </div>
+    </div>
+
+    <div class="music-controls-box" id="musicControlsBox" dir="rtl">
+        <div class="controls-row">
+            <button class="volume-toggle-btn" id="musicToggle" title="تشغيل/إيقاف الصوت">🔇</button>
+            <span class="control-label">🔊 الصوت</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50" class="volume-slider">
+        </div>
+    </div>
+    <script src="data.js"></script>
+<script src="watch.js"></script>
+    <script>
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggle');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        if (musicBtn && volumeSlider && audio) {
+            function toggleMusic() {
+                if (audio.paused) {
+                    audio.play().catch(() => {});
+                    musicBtn.innerHTML = '🔊';
+                    localStorage.setItem('musicState', 'playing');
+                } else {
+                    audio.pause();
+                    musicBtn.innerHTML = '🔇';
+                    localStorage.setItem('musicState', 'paused');
+                }
+            }
+
+            musicBtn.addEventListener('click', toggleMusic);
+
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = this.value / 100;
+                localStorage.setItem('musicVolume', this.value);
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const savedVolume = localStorage.getItem('musicVolume') || 50;
+                audio.volume = savedVolume / 100;
+                volumeSlider.value = savedVolume;
+
+                if (localStorage.getItem('musicState') === 'playing') {
+                    audio.play().catch(() => {});
+                    musicBtn.innerHTML = '🔊';
+                }
+
+                setInterval(() => {
+                    if (!audio.paused) {
+                        localStorage.setItem('musicTime', audio.currentTime);
+                    }
+                }, 3000);
+            });
+
+            window.addEventListener('beforeunload', function() {
+                if (!audio.paused) {
+                    localStorage.setItem('musicTime', audio.currentTime);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
